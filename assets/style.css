@@ -1,0 +1,13 @@
+.nav-item {
+    margin-right: 10px;
+    margin-bottom: 5px;
+    width: 200px;
+}
+
+td a {
+    margin-right: 5px;
+}
+
+#commandRow, #typeRow, #exampleRow, #navMenu {
+    display: none;
+}

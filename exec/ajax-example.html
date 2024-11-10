@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>ajax_example</title>
+</head>
+<body>
+    <div id="dataContainer">
+    </div>
+</body>
+<script>
+    let url="http://localhost/labs/lab4/api/command-json.php";
+    let container = document.getElementById('dataContainer');
+    fetch(url).then(res=>res.json())
+    .then(data=>{
+        container.innerHTML += 'Оператори:</br>';
+        for (i = 0; i < data.length; i++) {
+            container.innerHTML += '<b>' + data[i]['id'] + '.</b> ' + data[i]['name'] + '</br><b>Опис: </b> ' + data[i]['description'] + '</br><b>Тип: </b> ' + data[i]['type'] + '</br><b>Приклад використання: </b> ' + data[i]['example'] + '</br>';
+        }
+        container.innerHTML += '</br>';
+    });
+    url="http://localhost/labs/lab4/api/type-json.php";
+    fetch(url).then(res=>res.json())
+    .then(data=>{
+        container.innerHTML += 'Типи:</br>';
+        for (i = 0; i < data.length; i++) {
+            container.innerHTML += '<b>' + data[i]['id'] + '.</b> ' + data[i]['name'] + '</br>';
+        }
+        container.innerHTML += '</br>';
+    });
+    url="http://localhost/labs/lab4/api/example-json.php";
+    fetch(url).then(res=>res.json())
+    .then(data=>{
+        container.innerHTML += 'Приклади використання:</br>';
+        for (i = 0; i < data.length; i++) {
+            container.innerHTML += '<b>' + data[i]['id'] + '.</b> ' + data[i]['exampleCode'] + '</br>';
+        }
+        container.innerHTML += '</br>';
+    });
+</script>
+</html>
