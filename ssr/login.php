@@ -1,13 +1,24 @@
 <?php
 session_start();
+require_once('../app/dbconnect.php');
 if (isset($_SESSION['user'])) {
     header('Location:command-list.php');
 };
 if (isset($_POST['login'])) {
-    if ($_POST['login'] == 'admin' && $_POST['password'] == '1111') {
-        $_SESSION['user'] = "admin";
-        header('Location:command-list.php');
-    };
+    $stmt = $conn->prepare("SELECT * FROM users WHERE login = ? AND password = MD5(?);");
+    $login = $_POST['login'];
+    $password = $_POST['password'];
+    $stmt->bind_param("ss", $login, $password);
+    $stmt->execute();
+    $stmt->store_result();
+    $stmt->bind_result($id, $login, $password);
+    if ($stmt->num_rows > 0) {
+        while ($row = $stmt->fetch()) {
+            $_SESSION['user'] = $login;
+        }
+    }
+    $stmt->free_result();
+    header('Location:command-list.php');
 };
 ?>
 <html lang="en">

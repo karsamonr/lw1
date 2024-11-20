@@ -34,5 +34,5 @@ foreach ($data as $item) {
 echo '</br>Приклади використання:</br>';
 $data = json_decode($outExample, true);
 foreach ($data as $item) {
-    echo '<b>'.$item['id'].'</b>. '.$item['exampleCode'].'</br>';
+    echo '<b>'.$item['id'].'</b>. '.$item['example_code'].'</br>';
 }

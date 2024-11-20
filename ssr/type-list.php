@@ -3,12 +3,12 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
+require_once('../app/dbconnect.php');
 require_once('../app/TypeList.php');
 $typeList = new TypeList();
-$typeList->readFromFile();
+$typeList->getFromDatabase($conn);
 if (isset($_GET['action']) && $_GET['action'] == 'delete'){
-    $typeList->delete($_GET['id']);
-    $typeList->saveToFile();
+    $typeList->deleteFromDatabaseByID($conn, $_GET['id']);
     header('Location: ./type-list.php');
 }
 ?>

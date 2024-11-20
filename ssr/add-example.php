@@ -3,24 +3,31 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
+require_once('../app/dbconnect.php');
 require_once('../app/ExampleList.php');
+require_once('../app/CommandList.php');
 $exampleList = new ExampleList();
-$exampleList->readFromFile();
+$exampleList->getFromDatabase($conn);
+$comList = new CommandList();
+$comList->getFromDatabase($conn);
 $idContent = '';
 $codeContent = '';
+$commContent = '';
 if (isset($_GET['id'])) {
     $temp = $exampleList->getItemById($_GET['id']);
     $idContent = $temp['id'];
-    $codeContent = $temp['exampleCode'];
+    $codeContent = $temp['example_code'];
+    $commContent = $temp['command'];
 }
-if (isset($_POST['exampleCode'])) {
+if (isset($_POST['example_code'])) {
     if ($_POST['id'] == '') {
-        $exampleList->add(array('exampleCode'=>$_POST['exampleCode']));
+        $exampleList->addToDatabase($conn, array('example_code'=>$_POST['example_code'], 
+                        'command'=>$_POST['command']));
     } else {
-        $exampleList->update(array('id'=>$_POST['id'], 
-                    'exampleCode'=>$_POST['exampleCode']));
+        $exampleList->updateDatabaseRow($conn, array('id'=>$_POST['id'], 
+                        'example_code'=>$_POST['example_code'],
+                        'command'=>$_POST['command']));
     }
-    $exampleList->saveToFile();
     header('Location: ./example-list.php');
 }
 ?>
@@ -49,7 +56,10 @@ if (isset($_POST['exampleCode'])) {
         <div class="mt-4">
             <form method="POST">
                 <input type="hidden" name="id" value="<?php echo $idContent;?>"/>
-                <p><input class="form-input" value="<?php echo $codeContent;?>" name="exampleCode" type="text" placeholder="Код прикладу" required/></p>
+                <p><input class="form-input" value="<?php echo $codeContent;?>" name="example_code" type="text" placeholder="Код прикладу" required/></p>
+                <p>Виберіть оператор: <select name="command" required>
+                    <?php echo $comList->exportAsDropdownItems(); ?>
+                </select></p>
                 <p><button class="btn btn-outline-success" type="submit">Додати</button></p>
             </form>
         </div>

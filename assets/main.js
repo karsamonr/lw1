@@ -13,6 +13,9 @@ const exampleRow = document.getElementById('exampleRow');
 const navMenu = document.getElementById('navMenu');
 const loginRow = document.getElementById('loginRow');
 
+const typeSelect = document.getElementById('typeSelect');
+const commandSelect = document.getElementById('commandSelect');
+
 let commandData = {};
 let typeData = {};
 let exampleData = {};
@@ -36,18 +39,20 @@ function displayCommand() {
     .then(data => {
         commandData = data;
         let content = ``;
+        let inputContent = ``;
         for (i = 0; i < data.length; i++) {
             content += `<tr>
             <td>`+data[i]['id']+`</td>
             <td>`+data[i]['name']+`</td>
             <td>`+data[i]['description']+`</td>
             <td>`+data[i]['type']+`</td>
-            <td>`+data[i]['example']+`</td>
             <td><a href="#" class="edit-command btn btn-secondary btn-sm" data-id="`+data[i]['id']+`">Змінити</a>
             <a href="#" class="delete-command btn btn-secondary btn-sm" data-id="`+data[i]['id']+`">Видалити</a></td>
-            </tr>`;
+            </tr>`
+            inputContent+=`<option value="`+data[i]['id']+`">`+data[i]['name']+`</option>`;
         }
         commandTableContainer.innerHTML = content;
+        commandSelect.innerHTML = inputContent;
     });
 }
 
@@ -56,15 +61,18 @@ function displayTypes() {
     .then(data => {
         typeData = data;
         let content = ``;
+        let inputContent = ``;
         for (i = 0; i < data.length; i++) {
             content += `<tr>
             <td>`+data[i]['id']+`</td>
             <td>`+data[i]['name']+`</td>
             <td><a href="#" class="edit-type btn btn-secondary btn-sm" data-id="`+data[i]['id']+`">Змінити</a>
             <a href="#" class="delete-type btn btn-secondary btn-sm" data-id="`+data[i]['id']+`">Видалити</a></td>
-            </tr>`;
+            </tr>`
+            inputContent+=`<option value="`+data[i]['id']+`">`+data[i]['name']+`</option>`;
         }
         typeTableContainer.innerHTML = content;
+        typeSelect.innerHTML = inputContent;
     });
 }
 
@@ -76,7 +84,8 @@ function displayExamples() {
         for (i = 0; i < data.length; i++) {
             content += `<tr>
             <td>`+data[i]['id']+`</td>
-            <td>`+data[i]['exampleCode']+`</td>
+            <td>`+data[i]['example_code']+`</td>
+            <td>`+data[i]['command']+`</td>
             <td><a href="#" class="edit-example btn btn-secondary btn-sm" data-id="`+data[i]['id']+`">Змінити</a>
             <a href="#" class="delete-example btn btn-secondary btn-sm" data-id="`+data[i]['id']+`">Видалити</a></td>
             </tr>`;
@@ -95,10 +104,9 @@ document.addEventListener('submit', function(e) {
         let formId = document.querySelector('#commandForm input[name="itemId"]').value;
         let formName = document.querySelector('#commandForm input[name="name"]').value;
         let formDesc = document.querySelector('#commandForm input[name="description"]').value;
-        let formType = document.querySelector('#commandForm input[name="type"]').value;
-        let formEx = document.querySelector('#commandForm input[name="example"]').value;
+        let formType = document.querySelector('#commandForm select[name="type"]').value;
         if (formId == "") {
-            let data = JSON.stringify({"name":formName, "description":formDesc, "type":formType, "example":formEx});
+            let data = JSON.stringify({"name":formName, "description":formDesc, "type":formType});
             fetch("http://localhost/labs/lab4/api/command-json.php", {
                 method: "POST",
                 headers: {
@@ -114,7 +122,7 @@ document.addEventListener('submit', function(e) {
                 document.querySelector('#commandForm input[name="itemId"]').value = "";
             });
         } else {
-            let data = JSON.stringify({"id":formId, "name":formName, "description":formDesc, "type":formType, "example":formEx});
+            let data = JSON.stringify({"id":formId, "name":formName, "description":formDesc, "type":formType});
             fetch("http://localhost/labs/lab4/api/command-json.php", {
                 method: "PUT",
                 headers: {
@@ -172,9 +180,10 @@ document.addEventListener('submit', function(e) {
     if (e.target.id == "exampleForm") {
         e.preventDefault();
         let formId = document.querySelector('#exampleForm input[name="itemId"]').value;
-        let formCode = document.querySelector('#exampleForm input[name="exampleCode"]').value;
+        let formCode = document.querySelector('#exampleForm input[name="example_code"]').value;
+        let formComm = document.querySelector('#exampleForm select[name="command"]').value;
         if (formId == "") {
-            let data = JSON.stringify({"exampleCode":formCode});
+            let data = JSON.stringify({"example_code":formCode, "command":formComm});
             fetch("http://localhost/labs/lab4/api/example-json.php", {
                 method: "POST",
                 headers: {
@@ -190,7 +199,7 @@ document.addEventListener('submit', function(e) {
                 document.querySelector('#exampleForm input[name="itemId"]').value = "";
             });
         } else {
-            let data = JSON.stringify({"id":formId, "exampleCode":formCode});
+            let data = JSON.stringify({"id":formId, "example_code":formCode, "command":formComm});
             fetch("http://localhost/labs/lab4/api/example-json.php", {
                 method: "PUT",
                 headers: {
@@ -246,8 +255,6 @@ document.addEventListener('click', function(e) {
                 document.querySelector('#commandForm input[name="itemId"]').value = itemData['id'];
                 document.querySelector('#commandForm input[name="name"]').value = itemData['name'];
                 document.querySelector('#commandForm input[name="description"]').value = itemData['description'];
-                document.querySelector('#commandForm input[name="type"]').value = itemData['type'];
-                document.querySelector('#commandForm input[name="example"]').value = itemData['example'];
             }
         }
     } else if (e.target.classList.contains('delete-command')) {
@@ -295,7 +302,7 @@ document.addEventListener('click', function(e) {
             if (exampleData[i]['id'] == e.target.getAttribute('data-id')) {
                 let itemData = exampleData[i];
                 document.querySelector('#exampleForm input[name="itemId"]').value = itemData['id'];
-                document.querySelector('#exampleForm input[name="exampleCode"]').value = itemData['exampleCode'];
+                document.querySelector('#exampleForm input[name="example_code"]').value = itemData['example_code'];
             }
         }
     } else if (e.target.classList.contains('delete-example')) {

@@ -11,7 +11,7 @@ $comList = new CommandList();
 if (($handle = fopen("../data/commands.csv", "r")) !== false) {
     while (($data = fgetcsv($handle,1000,",")) !== false) {
         if ($row) {
-            $comList->add(array('name'=>$data[0], 'description'=>$data[1], 'type'=>$data[2], 'example'=>$data[3]));
+            $comList->add(array('name'=>$data[0], 'description'=>$data[1], 'type'=>$data[2]));
         } else
         $row = true;
     }

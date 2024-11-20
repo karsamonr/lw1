@@ -4,14 +4,12 @@ class Command {
     private $name;
     private $description;
     private $type;
-    private $example;
     
     public function __construct($params) {
         $this->id=$params['id'];
         $this->name=$params['name'];
         $this->description=$params['description'];
         $this->type=$params['type'];
-        $this->example=$params['example'];
     }
 
     public function __destruct() {
@@ -19,7 +17,6 @@ class Command {
         $this->name=null;
         $this->description=null;
         $this->type=null;
-        $this->example=null;
     }
 
     public function update($params) {
@@ -35,16 +32,12 @@ class Command {
         if (isset($params['type'])) {
             $this->type=$params['type'];
         }
-        if (isset($params['example'])) {
-            $this->example=$params['example'];
-        }
     }
 
     public function displayInfo() {
         echo '<b>'.$this->id.'</b>. '.$this->name.
         '</br><b>Опис:</b> '.$this->description.
-        '</br><b>Тип:</b> '.$this->type.
-        '</br><b>Приклад використання:</b> '. $this->example .'</br>';
+        '</br><b>Тип:</b> '.$this->type.'</br>';
     }
 
     public function getId() {
@@ -52,11 +45,11 @@ class Command {
     }
 
     public function getAsArray() {
-        return array($this->name, $this->description, $this->type, $this->example);
+        return array($this->name, $this->description, $this->type);
     }
 
     public function getAsAssocArray() {
-        return array('id'=>$this->id, 'name'=>$this->name, 'description'=>$this->description, 'type'=>$this->type, 'example'=>$this->example);
+        return array('id'=>$this->id, 'name'=>$this->name, 'description'=>$this->description, 'type'=>$this->type);
     }
 
     public function getAsTableRow() {
@@ -65,7 +58,6 @@ class Command {
                     <td>'.$this->name.'</td>
                     <td>'.$this->description.'</td>
                     <td>'.$this->type.'</td>
-                    <td>'.$this->example.'</td>
                     <td><a class="btn btn-secondary btn-sm" href="add-command.php?id='.$this->id.'">Змінити</a><a class="btn btn-secondary btn-sm" href="command-list.php?action=delete&id='.$this->id.'">Видалити</a></td>
                 </tr>';
     }

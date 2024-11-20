@@ -37,7 +37,6 @@
                             <th>Назва</th>
                             <th>Опис</th>
                             <th>Тип</th>
-                            <th>Приклад</th>
                             <th>Дії</th>
                         </tr>
                     </thead>
@@ -50,8 +49,7 @@
                     <input type="hidden" name="itemId" value=""/>
                     <p><input class="form-input" value="" name="name" type="text" placeholder="Назва оператора" required/></p>
                     <p><input class="form-input" value="" name="description" type="text" placeholder="Опис" required/></p>
-                    <p><input class="form-input" value="" name="type" type="text" placeholder="Тип" required/></p>
-                    <p><input class="form-input" value="" name="example" type="text" placeholder="Приклад" required/></p>
+                    <p>Виберіть тип: <select name="type" id="typeSelect" required></select></p>
                     <p><button class="btn btn-outline-success" type="submit">Додати оператор</button></p>
                 </form>
             </div>
@@ -89,6 +87,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Приклад</th>
+                            <th>Оператор</th>
                             <th>Дії</th>
                         </tr>
                     </thead>
@@ -99,7 +98,8 @@
             <div class="col-md-4 mt-4">
                 <form id="exampleForm">
                     <input type="hidden" name="itemId" value=""/>
-                    <p><input class="form-input" value="" name="exampleCode" type="text" placeholder="Код прикладу" required/></p>
+                    <p><input class="form-input" value="" name="example_code" type="text" placeholder="Код прикладу" required/></p>
+                    <p>Виберіть оператор: <select name="command" id="commandSelect" required></select></p>
                     <p><button class="btn btn-outline-success" type="submit">Додати приклад</button></p>
                 </form>
             </div>

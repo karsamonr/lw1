@@ -3,36 +3,35 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
+require_once('../app/dbconnect.php');
 require_once('../app/CommandList.php');
+require_once('../app/TypeList.php');
 $comList = new CommandList();
-$comList->readFromFile();
+$comList->getFromDatabase($conn);
+$typeList = new TypeList();
+$typeList->getFromDatabase($conn);
 $idContent = '';
 $nameContent = '';
 $descContent = '';
 $typeContent = '';
-$exmpContent = '';
 if (isset($_GET['id'])) {
     $temp = $comList->getItemById($_GET['id']);
     $idContent = $temp['id'];
     $nameContent = $temp['name'];
     $descContent = $temp['description'];
     $typeContent = $temp['type'];
-    $exmpContent = $temp['example'];
 }
 if (isset($_POST['name'])) {
     if ($_POST['id'] == '') {
-        $comList->add(array('name'=>$_POST['name'], 
+        $comList->addToDatabase($conn, array('name'=>$_POST['name'], 
                     'description'=>$_POST['description'], 
-                    'type'=>$_POST['type'], 
-                    'example'=>$_POST['example']));
+                    'type'=>$_POST['type']));
     } else {
-        $comList->update(array('id'=>$_POST['id'], 
+        $comList->updateDatabaseRow($conn, array('id'=>$_POST['id'], 
                     'name'=>$_POST['name'], 
                     'description'=>$_POST['description'], 
-                    'type'=>$_POST['type'], 
-                    'example'=>$_POST['example']));
+                    'type'=>$_POST['type']));
     }
-    $comList->saveToFile();
     header('Location: ./command-list.php');
 }
 ?>
@@ -63,8 +62,9 @@ if (isset($_POST['name'])) {
                 <input type="hidden" name="id" value="<?php echo $idContent;?>"/>
                 <p><input class="form-input" value="<?php echo $nameContent;?>" name="name" type="text" placeholder="Назва оператора" required/></p>
                 <p><input class="form-input" value="<?php echo $descContent;?>" name="description" type="text" placeholder="Опис" required/></p>
-                <p><input class="form-input" value="<?php echo $typeContent;?>" name="type" type="text" placeholder="Тип" required/></p>
-                <p><input class="form-input" value="<?php echo $exmpContent;?>" name="example" type="text" placeholder="Приклад" required/></p>
+                <p>Виберіть тип: <select name="type" required>
+                    <?php echo $typeList->exportAsDropdownItems(); ?>
+                </select></p>
                 <p><button class="btn btn-outline-success" type="submit">Додати</button></p>
             </form>
         </div>

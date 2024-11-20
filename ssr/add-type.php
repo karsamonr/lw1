@@ -3,9 +3,10 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
+require_once('../app/dbconnect.php');
 require_once('../app/TypeList.php');
 $typeList = new TypeList();
-$typeList->readFromFile();
+$typeList->getFromDatabase($conn);
 $idContent = '';
 $nameContent = '';
 if (isset($_GET['id'])) {
@@ -15,12 +16,10 @@ if (isset($_GET['id'])) {
 }
 if (isset($_POST['name'])) {
     if ($_POST['id'] == '') {
-        $typeList->add(array('name'=>$_POST['name']));
+        $typeList->addToDatabase($conn, array('name'=>$_POST['name']));
     } else {
-        $typeList->update(array('id'=>$_POST['id'], 
-                    'name'=>$_POST['name']));
+        $typeList->updateDatabaseRow($conn, array('id'=>$_POST['id'], 'name'=>$_POST['name']));
     }
-    $typeList->saveToFile();
     header('Location: ./type-list.php');
 }
 ?>

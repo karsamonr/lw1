@@ -1,4 +1,14 @@
-exampleCode
-"x = 5 + 3"
-"x = (True and True)"
-"x = 5 > 3"
+example_code,command
+"x = 5 + 3",+
+"x = 9 + 2",+
+"x = 5 - 3",-
+"x = 9 - 2",-
+"x = 5 * 3",*
+"x = 4 / 2",/
+"x = (5 == 5)",==
+"x = (5 != 8)",!=
+"x = (true and false)",and
+"x = (true and false)",or
+"x = 5",=
+"x = 5;  x += 3",+=
+1232222,+

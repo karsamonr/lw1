@@ -3,12 +3,12 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
+require_once('../app/dbconnect.php');
 require_once('../app/CommandList.php');
 $comList = new CommandList();
-$comList->readFromFile();
+$comList->getFromDatabase($conn);
 if (isset($_GET['action']) && $_GET['action'] == 'delete'){
-    $comList->delete($_GET['id']);
-    $comList->saveToFile();
+    $comList->deleteFromDatabaseByID($conn, $_GET['id']);
     header('Location: ./command-list.php');
 }
 ?>
@@ -41,7 +41,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete'){
                     <th>Назва</th>
                     <th>Опис</th>
                     <th>Тип</th>
-                    <th>Приклад</th>
                     <th>Дії</th>
                 </tr>
             </thead>

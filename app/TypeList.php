@@ -4,8 +4,12 @@ require_once('../app/Type.php');
 
 class TypeList extends BaseList {
     public function add($params) {
-        $this->id++;
-        $params['id'] = $this->id;
+        if (isset($params['id'])) {
+            $this->id++;
+        } else {
+            $this->id++;
+            $params['id'] = $this->id;
+        }
         $newType = new Type($params);
         array_push($this->dataArray, $newType);
     }
@@ -31,6 +35,15 @@ class TypeList extends BaseList {
         $result .= '</types>';
         return $result;
     }
+
+    public function exportAsDropdownItems() {
+        $result = '';
+        foreach ($this->dataArray as $item) {
+            $itemData = $item->getAsAssocArray();
+            $result .= '<option value="'.$itemData['id'].'">'.$itemData['name'].'</option>';
+        }
+        return $result;
+    }
     
     public function readFromFile() {
         $row = 0;
@@ -51,5 +64,39 @@ class TypeList extends BaseList {
         fputcsv($fp, $item);
         }
         fclose($fp);
+    }
+
+    public function getFromDatabase($conn) {
+        $sql = "SELECT type_id id, type_name name FROM types ORDER BY 1";
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $this->add($row);
+            }
+        }
+    }
+
+    public function deleteFromDatabaseByID($conn, $id) {
+        $stmt = $conn->prepare("DELETE FROM types WHERE type_id=?");
+        $stmt->bind_param("s", $id);
+        $stmt->execute();
+        return true;
+    }
+
+    public function addToDatabase($conn, $params) {
+        $stmt = $conn->prepare("INSERT INTO types VALUES (DEFAULT, ?)");
+        $name = $params['name'];
+        $stmt->bind_param("s", $name);
+        $stmt->execute();
+        return true;
+    }
+
+    public function updateDatabaseRow($conn, $params) {
+        $stmt = $conn->prepare("UPDATE types SET type_name = ? WHERE type_id = ?");
+        $name = $params['name'];
+        $id = $params['id'];
+        $stmt->bind_param("ss", $name, $id);
+        $stmt->execute();
+        return true;
     }
 }

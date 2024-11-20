@@ -3,12 +3,12 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
+require_once('../app/dbconnect.php');
 require_once('../app/ExampleList.php');
 $exampleList = new ExampleList();
-$exampleList->readFromFile();
+$exampleList->getFromDatabase($conn);
 if (isset($_GET['action']) && $_GET['action'] == 'delete'){
-    $exampleList->delete($_GET['id']);
-    $exampleList->saveToFile();
+    $exampleList->deleteFromDatabaseByID($conn, $_GET['id']);
     header('Location: ./example-list.php');
 }
 ?>
@@ -39,6 +39,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete'){
                 <tr>
                     <th>ID</th>
                     <th>Приклад</th>
+                    <th>Оператор</th>
                     <th>Дії</th>
                 </tr>
             </thead>

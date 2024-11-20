@@ -11,7 +11,7 @@ $exampleList = new ExampleList();
 if (($handle = fopen("../data/examples.csv", "r")) !== false) {
     while (($data = fgetcsv($handle,1000,",")) !== false) {
         if ($row) {
-            $exampleList->add(array('exampleCode'=>$data[0]));
+            $exampleList->add(array('example_code'=>$data[0], 'command'=>$data[1]));
         } else 
         $row = true;
     }
