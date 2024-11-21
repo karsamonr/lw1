@@ -3,8 +3,8 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
-require_once('../app/dbconnect.php');
-require_once('../app/CommandList.php');
+require_once('../dbconnect.php');
+require_once('../models/CommandList.php');
 $comList = new CommandList();
 $comList->getFromDatabase($conn);
 if (isset($_GET['action']) && $_GET['action'] == 'delete'){

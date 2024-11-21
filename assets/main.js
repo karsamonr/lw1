@@ -20,7 +20,7 @@ let commandData = {};
 let typeData = {};
 let exampleData = {};
 
-fetch("http://localhost/labs/lab4/api/profile.php").then(res => res.json())
+fetch("http://localhost/labs/pms_python/api/profile").then(res => res.json())
 .then(data => {
     if (data['login'] == true) {
         navMenu.style.display = 'flex';
@@ -35,7 +35,7 @@ fetch("http://localhost/labs/lab4/api/profile.php").then(res => res.json())
 });
 
 function displayCommand() {
-    fetch("http://localhost/labs/lab4/api/command-json.php").then(res => res.json())
+    fetch("http://localhost/labs/pms_python/api/command").then(res => res.json())
     .then(data => {
         commandData = data;
         let content = ``;
@@ -57,7 +57,7 @@ function displayCommand() {
 }
 
 function displayTypes() {
-    fetch("http://localhost/labs/lab4/api/type-json.php").then(res => res.json())
+    fetch("http://localhost/labs/pms_python/api/type").then(res => res.json())
     .then(data => {
         typeData = data;
         let content = ``;
@@ -77,7 +77,7 @@ function displayTypes() {
 }
 
 function displayExamples() {
-    fetch("http://localhost/labs/lab4/api/example-json.php").then(res => res.json())
+    fetch("http://localhost/labs/pms_python/api/example").then(res => res.json())
     .then(data => {
         exampleData = data;
         let content = ``;
@@ -107,7 +107,7 @@ document.addEventListener('submit', function(e) {
         let formType = document.querySelector('#commandForm select[name="type"]').value;
         if (formId == "") {
             let data = JSON.stringify({"name":formName, "description":formDesc, "type":formType});
-            fetch("http://localhost/labs/lab4/api/command-json.php", {
+            fetch("http://localhost/labs/pms_python/api/command", {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -123,7 +123,7 @@ document.addEventListener('submit', function(e) {
             });
         } else {
             let data = JSON.stringify({"id":formId, "name":formName, "description":formDesc, "type":formType});
-            fetch("http://localhost/labs/lab4/api/command-json.php", {
+            fetch("http://localhost/labs/pms_python/api/command", {
                 method: "PUT",
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -145,7 +145,7 @@ document.addEventListener('submit', function(e) {
         let formName = document.querySelector('#typeForm input[name="name"]').value;
         if (formId == "") {
             let data = JSON.stringify({"name":formName});
-            fetch("http://localhost/labs/lab4/api/type-json.php", {
+            fetch("http://localhost/labs/pms_python/api/type", {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -161,7 +161,7 @@ document.addEventListener('submit', function(e) {
             });
         } else {
             let data = JSON.stringify({"id":formId, "name":formName});
-            fetch("http://localhost/labs/lab4/api/type-json.php", {
+            fetch("http://localhost/labs/pms_python/api/type", {
                 method: "PUT",
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -184,7 +184,7 @@ document.addEventListener('submit', function(e) {
         let formComm = document.querySelector('#exampleForm select[name="command"]').value;
         if (formId == "") {
             let data = JSON.stringify({"example_code":formCode, "command":formComm});
-            fetch("http://localhost/labs/lab4/api/example-json.php", {
+            fetch("http://localhost/labs/pms_python/api/example", {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -200,7 +200,7 @@ document.addEventListener('submit', function(e) {
             });
         } else {
             let data = JSON.stringify({"id":formId, "example_code":formCode, "command":formComm});
-            fetch("http://localhost/labs/lab4/api/example-json.php", {
+            fetch("http://localhost/labs/pms_python/api/example", {
                 method: "PUT",
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -221,7 +221,7 @@ document.addEventListener('submit', function(e) {
         let formLogin = document.querySelector('#loginForm input[name="login"]').value;
         let formPassword = document.querySelector('#loginForm input[name="password"]').value;
         let data = JSON.stringify({"login":formLogin, "password":formPassword});
-        fetch("http://localhost/labs/lab4/api/profile.php", {
+        fetch("http://localhost/labs/pms_python/api/profile", {
             method: "POST",
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -260,7 +260,7 @@ document.addEventListener('click', function(e) {
     } else if (e.target.classList.contains('delete-command')) {
         e.preventDefault();
         let data = JSON.stringify({"id":e.target.getAttribute('data-id')});
-        fetch("http://localhost/labs/lab4/api/command-json.php", {
+        fetch("http://localhost/labs/pms_python/api/command", {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -284,7 +284,7 @@ document.addEventListener('click', function(e) {
     } else if (e.target.classList.contains('delete-type')) {
         e.preventDefault();
         let data = JSON.stringify({"id":e.target.getAttribute('data-id')});
-        fetch("http://localhost/labs/lab4/api/type-json.php", {
+        fetch("http://localhost/labs/pms_python/api/type", {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -308,7 +308,7 @@ document.addEventListener('click', function(e) {
     } else if (e.target.classList.contains('delete-example')) {
         e.preventDefault();
         let data = JSON.stringify({"id":e.target.getAttribute('data-id')});
-        fetch("http://localhost/labs/lab4/api/example-json.php", {
+        fetch("http://localhost/labs/pms_python/api/example", {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -337,7 +337,7 @@ document.addEventListener('click', function(e) {
         exampleRow.style.display = "flex";
     } else if (e.target.id == "logoutBtn") {
         e.preventDefault();
-        fetch("http://localhost/labs/lab4/api/profile.php?action=logout", )
+        fetch("http://localhost/labs/pms_python/api/profile?action=logout", )
         .then(function(res){ return res.json(); })
         .then(function(data){ 
             navMenu.style.display = 'none';

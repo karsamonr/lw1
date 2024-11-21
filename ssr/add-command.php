@@ -3,9 +3,9 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
-require_once('../app/dbconnect.php');
-require_once('../app/CommandList.php');
-require_once('../app/TypeList.php');
+require_once('../dbconnect.php');
+require_once('../models/CommandList.php');
+require_once('../models/TypeList.php');
 $comList = new CommandList();
 $comList->getFromDatabase($conn);
 $typeList = new TypeList();

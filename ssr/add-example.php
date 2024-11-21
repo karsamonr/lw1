@@ -3,9 +3,9 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
-require_once('../app/dbconnect.php');
-require_once('../app/ExampleList.php');
-require_once('../app/CommandList.php');
+require_once('../dbconnect.php');
+require_once('../models/ExampleList.php');
+require_once('../models/CommandList.php');
 $exampleList = new ExampleList();
 $exampleList->getFromDatabase($conn);
 $comList = new CommandList();
