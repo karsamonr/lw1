@@ -3,8 +3,8 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
-require_once('../app/dbconnect.php');
-require_once('../app/TypeList.php');
+require_once('../dbconnect.php');
+require_once('../models/TypeList.php');
 $typeList = new TypeList();
 $typeList->getFromDatabase($conn);
 $idContent = '';
@@ -15,12 +15,17 @@ if (isset($_GET['id'])) {
     $nameContent = $temp['name'];
 }
 if (isset($_POST['name'])) {
+    $dataTrueCatch = false;
     if ($_POST['id'] == '') {
-        $typeList->addToDatabase($conn, array('name'=>$_POST['name']));
+        $dataTrueCatch = $typeList->addToDatabase($conn, array('name'=>$_POST['name']));
     } else {
-        $typeList->updateDatabaseRow($conn, array('id'=>$_POST['id'], 'name'=>$_POST['name']));
+        $dataTrueCatch = $typeList->updateDatabaseRow($conn, array('id'=>$_POST['id'], 'name'=>$_POST['name']));
     }
-    header('Location: ./type-list.php');
+    if ($dataTrueCatch) {
+        header('Location: ./type-list.php');
+    } else {
+        echo '<script>alert("Тип з такими даними вже існує! Змініть дані")</script>';
+    }
 }
 ?>
 <html lang="en">

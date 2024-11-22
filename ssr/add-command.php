@@ -3,9 +3,9 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
-require_once('../app/dbconnect.php');
-require_once('../app/CommandList.php');
-require_once('../app/TypeList.php');
+require_once('../dbconnect.php');
+require_once('../models/CommandList.php');
+require_once('../models/TypeList.php');
 $comList = new CommandList();
 $comList->getFromDatabase($conn);
 $typeList = new TypeList();
@@ -13,7 +13,7 @@ $typeList->getFromDatabase($conn);
 $idContent = '';
 $nameContent = '';
 $descContent = '';
-$typeContent = '';
+$typeContent = null;
 if (isset($_GET['id'])) {
     $temp = $comList->getItemById($_GET['id']);
     $idContent = $temp['id'];
@@ -22,17 +22,22 @@ if (isset($_GET['id'])) {
     $typeContent = $temp['type'];
 }
 if (isset($_POST['name'])) {
+    $dataTrueCatch = false;
     if ($_POST['id'] == '') {
-        $comList->addToDatabase($conn, array('name'=>$_POST['name'], 
+        $dataTrueCatch = $comList->addToDatabase($conn, array('name'=>$_POST['name'], 
                     'description'=>$_POST['description'], 
-                    'type'=>$_POST['type']));
+                    'type_id'=>$_POST['type_id']));
     } else {
-        $comList->updateDatabaseRow($conn, array('id'=>$_POST['id'], 
+        $dataTrueCatch = $comList->updateDatabaseRow($conn, array('id'=>$_POST['id'], 
                     'name'=>$_POST['name'], 
                     'description'=>$_POST['description'], 
-                    'type'=>$_POST['type']));
+                    'type_id'=>$_POST['type_id']));
     }
-    header('Location: ./command-list.php');
+    if ($dataTrueCatch) {
+        header('Location: ./command-list.php');
+    } else {
+        echo '<script>alert("Оператор з такими даними вже існує! Змініть дані")</script>';
+    }
 }
 ?>
 <html lang="en">
@@ -62,8 +67,8 @@ if (isset($_POST['name'])) {
                 <input type="hidden" name="id" value="<?php echo $idContent;?>"/>
                 <p><input class="form-input" value="<?php echo $nameContent;?>" name="name" type="text" placeholder="Назва оператора" required/></p>
                 <p><input class="form-input" value="<?php echo $descContent;?>" name="description" type="text" placeholder="Опис" required/></p>
-                <p>Виберіть тип: <select name="type" required>
-                    <?php echo $typeList->exportAsDropdownItems(); ?>
+                <p>Виберіть тип: <select name="type_id" required>
+                    <?php echo $typeList->exportAsDropdownItems($typeContent); ?>
                 </select></p>
                 <p><button class="btn btn-outline-success" type="submit">Додати</button></p>
             </form>

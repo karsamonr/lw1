@@ -3,16 +3,16 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
-require_once('../app/dbconnect.php');
-require_once('../app/ExampleList.php');
-require_once('../app/CommandList.php');
+require_once('../dbconnect.php');
+require_once('../models/ExampleList.php');
+require_once('../models/CommandList.php');
 $exampleList = new ExampleList();
 $exampleList->getFromDatabase($conn);
 $comList = new CommandList();
 $comList->getFromDatabase($conn);
 $idContent = '';
 $codeContent = '';
-$commContent = '';
+$commContent = null;
 if (isset($_GET['id'])) {
     $temp = $exampleList->getItemById($_GET['id']);
     $idContent = $temp['id'];
@@ -20,15 +20,20 @@ if (isset($_GET['id'])) {
     $commContent = $temp['command'];
 }
 if (isset($_POST['example_code'])) {
+    $dataTrueCatch = false;
     if ($_POST['id'] == '') {
-        $exampleList->addToDatabase($conn, array('example_code'=>$_POST['example_code'], 
-                        'command'=>$_POST['command']));
+        $dataTrueCatch = $exampleList->addToDatabase($conn, array('example_code'=>$_POST['example_code'], 
+                        'command_id'=>$_POST['command_id']));
     } else {
-        $exampleList->updateDatabaseRow($conn, array('id'=>$_POST['id'], 
+        $dataTrueCatch = $exampleList->updateDatabaseRow($conn, array('id'=>$_POST['id'], 
                         'example_code'=>$_POST['example_code'],
-                        'command'=>$_POST['command']));
+                        'command_id'=>$_POST['command_id']));
     }
-    header('Location: ./example-list.php');
+    if ($dataTrueCatch) {
+        header('Location: ./example-list.php');
+    } else {
+        echo '<script>alert("Приклад з такими даними вже існує! Змініть дані")</script>';
+    }
 }
 ?>
 <html lang="en">
@@ -57,8 +62,8 @@ if (isset($_POST['example_code'])) {
             <form method="POST">
                 <input type="hidden" name="id" value="<?php echo $idContent;?>"/>
                 <p><input class="form-input" value="<?php echo $codeContent;?>" name="example_code" type="text" placeholder="Код прикладу" required/></p>
-                <p>Виберіть оператор: <select name="command" required>
-                    <?php echo $comList->exportAsDropdownItems(); ?>
+                <p>Виберіть оператор: <select name="command_id" required>
+                    <?php echo $comList->exportAsDropdownItems($commContent); ?>
                 </select></p>
                 <p><button class="btn btn-outline-success" type="submit">Додати</button></p>
             </form>

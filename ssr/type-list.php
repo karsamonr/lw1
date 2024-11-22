@@ -3,10 +3,10 @@ session_start();
 if (!isset($_SESSION['user'])) {
     header('Location:login.php');
 };
-require_once('../app/dbconnect.php');
-require_once('../app/TypeList.php');
+require_once('../dbconnect.php');
+require_once('../models/TypeList.php');
 $typeList = new TypeList();
-$typeList->getFromDatabase($conn);
+//$typeList->getFromDatabase($conn);
 if (isset($_GET['action']) && $_GET['action'] == 'delete'){
     $typeList->deleteFromDatabaseByID($conn, $_GET['id']);
     header('Location: ./type-list.php');
@@ -34,16 +34,26 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete'){
             <li class="nav-item"><a class="btn btn-dark nav-item" href="add-type.php">Додати тип</a></li>
             <li class="nav-item"><a class="btn btn-dark nav-item" href="add-example.php">Додати приклад</a></li>
         </nav>
+        <form action="./type-list.php" method="GET">
+            <input type="search" name="query" required/>
+            <input type="submit" value="Пошук"/>
+        </form>
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Назва</th>
                     <th>Дії</th>
                 </tr>
             </thead>
             <tbody>
-                <?php echo $typeList->exportAsTableData(); ?>
+                <?php 
+                    if ($_SERVER['REQUEST_METHOD']=="GET" && isset($_GET['query'])) {
+                        $typeList->getBySearchQuery($conn, $_GET['query']);
+                    } else {
+                        $typeList->getFromDatabase($conn);
+                    }
+                    echo $typeList->exportAsTableData(); 
+                ?>
             </tbody>
         </table>
         <a class="btn btn-outline-danger" href="logout.php">Вийти</a>
